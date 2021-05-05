@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <time.h>
+void insertionsort(int n,int a[])
+{
+    int i, ok, j;
+    for (i = 1; i < n; i++)
+    {
+        ok = a[i];
+        j = i - 1;
+        while (j >= 0 && a[j] > ok)
+        {
+            a[j + 1] = a[j];
+            j = j - 1;
+        }
+        a[j + 1] = ok;
+    }
+}
+void printarray (int n, int array[])
+{
+    int i;
+    for (i=0; i<n; i++)
+        printf("%d ",array[i]);
+    printf("\n");
+}
+int SortedCheck(int n, int a[]){
+    for (int i = 0; i < n; ++i){
+        if(a[n-1] < a[n-2])
+            printf("Not sorted.");
+    }
+    printf("Sorted");
+}
+int main()
+{
+    clock_t begin = clock();
+    int i=0;
+    static int a[1000000];
+    FILE* fptr;
+    fptr = fopen("D:\\C\\c programms\\Almost sorted input (1.000.000 elements).txt", "r");
+    while (fscanf(fptr, "%d", &a[i]) == 1)
+    {
+        i++;
+    }
+    insertionsort(i,a);
+    fclose(fptr);
+
+    clock_t end = clock();
+    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+
+    printarray(i,a);
+    SortedCheck(i,a);
+
+    printf("\nTotal time spent= %f sec",time_spent);
+    return 0;
+}
