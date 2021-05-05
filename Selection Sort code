@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <time.h>
+void selectionsort(int n,int array[])
+{
+    int i,smallest,aux,j;
+    for (i=0; i<n; i++)
+    {
+        smallest=i;
+        for (j=i+1; j<n; j++)
+            if (array[j]<array[smallest])
+                smallest=j;
+        aux=array[i];
+        array[i]=array[smallest];
+        array[smallest]=aux;
+    }
+}
+void printarray (int n, int array[])
+{
+    int i;
+    for (i=0; i<n; i++)
+        printf("%d ",array[i]);
+    printf("\n");
+}
+int SortedCheck(int n, int a[]){
+    for (int i = 0; i < n; ++i){
+        if(a[n-1] < a[n-2])
+            printf("Not sorted.");
+    }
+    printf("Sorted");
+}
+int main()
+{
+    clock_t begin = clock();
+    int i=0;
+    static int a[1000000];
+    FILE* fptr;
+    fptr = fopen("D:\\C\\c programms\\Almost sorted input (1.000.000 elements).txt", "r");
+    while (fscanf(fptr, "%d", &a[i]) == 1)
+    {
+        i++;
+    }
+    selectionsort(i,a);
+
+
+    fclose(fptr);
+
+    clock_t end = clock();
+    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+
+    printarray(i,a);
+    SortedCheck(i,a);
+
+    printf("\nTotal time spent= %f sec",time_spent);
+    return 0;
+}
