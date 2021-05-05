@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+void quicksort(int a[],int low,int high){
+    int i, j, pivot, aux;
+
+    if(low<high){
+        pivot=(low+high)/2;
+        i=low;
+        j=high;
+
+        while(i<j){
+            while(a[i]<=a[pivot]&&i<high)
+                i++;
+            while(a[j]>a[pivot])
+                j--;
+            if(i<j){
+                aux=a[i];
+                a[i]=a[j];
+                a[j]=aux;
+            }
+        }
+        aux=a[pivot];
+        a[pivot]=a[j];
+        a[j]=aux;
+        quicksort(a,low,j-1);
+        quicksort(a,j+1,high);
+
+    }
+}
+void printarray (int n, int array[])
+{
+    int i;
+    for (i=0; i<n; i++)
+        printf("%d ",array[i]);
+    printf("\n");
+}
+int arraySortedCheck(int n, int a[])
+{
+    for (int i = 0; i < n; ++i)
+    {
+        if(a[n-1] < a[n-2])
+            printf("Not sorted");
+    }
+    printf("Sorted");
+}
+int main()
+{
+    long  i = 0;
+    static int a[1000000];
+    clock_t begin = clock();
+    FILE *fptr;
+    fptr = fopen("D:\\C\\c programms\\Almost sorted input (100.000 elements).txt", "r");
+    while (fscanf(fptr, "%d", &a[i]) == 1)
+    {
+        i++;
+    }
+    quicksort(a,1,i);
+    fclose(fptr);
+    clock_t end = clock();
+    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+    printf("%d",i);
+    arraySortedCheck(i,a);
+    printf("\nTotal time spent= %f sec",time_spent);
+    return 0;
+}
