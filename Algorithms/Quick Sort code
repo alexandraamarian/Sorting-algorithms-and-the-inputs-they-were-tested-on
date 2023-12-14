@@ -1,66 +1,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-void quicksort(int a[],int low,int high){
-    int i, j, pivot, aux;
 
-    if(low<high){
-        pivot=(low+high)/2;
-        i=low;
-        j=high;
+void quickSortAlg(int inputDataArray[], int low, int high) {
+    int l, r, piv, aux;
 
-        while(i<j){
-            while(a[i]<=a[pivot]&&i<high)
-                i++;
-            while(a[j]>a[pivot])
-                j--;
-            if(i<j){
-                aux=a[i];
-                a[i]=a[j];
-                a[j]=aux;
+    if (low < high) {
+        piv = (low + high) / 2;
+        l = low;
+        r = high;
+
+        while (l < r) {
+            while (inputDataArray[l] <= inputDataArray[piv] && l < high)
+                l++;
+            while (inputDataArray[r] > inputDataArray[piv])
+                r--;
+            if (l < r) {
+                aux = inputDataArray[l];
+                inputDataArray[l] = inputDataArray[r];
+                inputDataArray[r] = aux;
             }
         }
-        aux=a[pivot];
-        a[pivot]=a[j];
-        a[j]=aux;
-        quicksort(a,low,j-1);
-        quicksort(a,j+1,high);
-
+        aux = inputDataArray[piv];
+        inputDataArray[piv] = inputDataArray[r];
+        inputDataArray[r] = aux;
+        quickSortAlg(inputDataArray, low, r - 1);
+        quickSortAlg(inputDataArray, r + 1, high);
     }
 }
-void printarray (int n, int array[])
-{
-    int i;
-    for (i=0; i<n; i++)
-        printf("%d ",array[i]);
+
+void printArray(int size, int array[]) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", array[i]);
     printf("\n");
 }
-int arraySortedCheck(int n, int a[])
-{
-    for (int i = 0; i < n; ++i)
-    {
-        if(a[n-1] < a[n-2])
-            printf("Not sorted");
+
+int isSorted(int size, int array[]) {
+    for (int i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1])
+            return 0; // Not sorted
     }
-    printf("Sorted");
+    return 1; // Sorted
 }
-int main()
-{
-    long  i = 0;
+
+int main() {
+    long i = 0;
     static int a[1000000];
     clock_t begin = clock();
     FILE *fptr;
     fptr = fopen("D:\\C\\c programms\\Almost sorted input (100.000 elements).txt", "r");
-    while (fscanf(fptr, "%d", &a[i]) == 1)
-    {
+    while (fscanf(fptr, "%d", &a[i]) == 1) {
         i++;
     }
-    quicksort(a,1,i);
+    quickSortAlg(a, 0, i - 1);
     fclose(fptr);
     clock_t end = clock();
-    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
-    printf("%d",i);
-    arraySortedCheck(i,a);
-    printf("\nTotal time spent= %f sec",time_spent);
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("%d", i);
+    
+    if (isSorted(i, a))
+        printf("Sorted\n");
+    else
+        printf("Not sorted\n");
+
+    printf("Total time spent = %f sec\n", time_spent);
     return 0;
 }

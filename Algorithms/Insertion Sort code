@@ -1,54 +1,58 @@
 #include <stdio.h>
 #include <time.h>
-void insertionsort(int n,int a[])
-{
-    int i, ok, j;
-    for (i = 1; i < n; i++)
-    {
-        ok = a[i];
+
+void insertionSortAlg(int size, int inputDataArray[]) {
+    int i, aux, j;
+
+    for (i = 1; i < size; i++) {
+        aux = inputDataArray[i];
         j = i - 1;
-        while (j >= 0 && a[j] > ok)
-        {
-            a[j + 1] = a[j];
+
+        while (j >= 0 && inputDataArray[j] > aux) {
+            inputDataArray[j + 1] = inputDataArray[j];
             j = j - 1;
         }
-        a[j + 1] = ok;
+
+        inputDataArray[j + 1] = aux;
     }
 }
-void printarray (int n, int array[])
-{
-    int i;
-    for (i=0; i<n; i++)
-        printf("%d ",array[i]);
+
+void printArray(int size, int array[]) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", array[i]);
     printf("\n");
 }
-int SortedCheck(int n, int a[]){
-    for (int i = 0; i < n; ++i){
-        if(a[n-1] < a[n-2])
-            printf("Not sorted.");
+
+int isSorted(int size, int array[]) {
+    for (int i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1])
+            return 0; // Not sorted
     }
-    printf("Sorted");
+    return 1; // Sorted
 }
-int main()
-{
+
+int main() {
     clock_t begin = clock();
-    int i=0;
+    int i = 0;
     static int a[1000000];
-    FILE* fptr;
+    FILE *fptr;
     fptr = fopen("D:\\C\\c programms\\Almost sorted input (1.000.000 elements).txt", "r");
-    while (fscanf(fptr, "%d", &a[i]) == 1)
-    {
+    while (fscanf(fptr, "%d", &a[i]) == 1) {
         i++;
     }
-    insertionsort(i,a);
+    insertionSortAlg(i, a);
     fclose(fptr);
 
     clock_t end = clock();
-    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printarray(i,a);
-    SortedCheck(i,a);
+    printArray(i, a);
 
-    printf("\nTotal time spent= %f sec",time_spent);
+    if (isSorted(i, a))
+        printf("Sorted\n");
+    else
+        printf("Not sorted\n");
+
+    printf("Total time spent = %f sec\n", time_spent);
     return 0;
 }

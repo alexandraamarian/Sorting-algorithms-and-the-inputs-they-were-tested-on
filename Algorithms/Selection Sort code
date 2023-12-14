@@ -1,55 +1,63 @@
 #include <stdio.h>
 #include <time.h>
-void selectionsort(int n,int array[])
-{
-    int i,smallest,aux,j;
-    for (i=0; i<n; i++)
-    {
-        smallest=i;
-        for (j=i+1; j<n; j++)
-            if (array[j]<array[smallest])
-                smallest=j;
-        aux=array[i];
-        array[i]=array[smallest];
-        array[smallest]=aux;
+
+void selectionSortAlg(int size, int inputDataArray[]) {
+    int i, smallest, aux, j;
+    
+    for (i = 0; i < size - 1; i++) {
+        smallest = i;
+        
+        for (j = i + 1; j < size; j++) {
+            if (inputDataArray[j] < inputDataArray[smallest]) {
+                smallest = j;
+            }
+        }
+        
+        aux = inputDataArray[i];
+        inputDataArray[i] = inputDataArray[smallest];
+        inputDataArray[smallest] = aux;
     }
 }
-void printarray (int n, int array[])
-{
-    int i;
-    for (i=0; i<n; i++)
-        printf("%d ",array[i]);
+
+void printArray(int size, int array[]) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", array[i]);
     printf("\n");
 }
-int SortedCheck(int n, int a[]){
-    for (int i = 0; i < n; ++i){
-        if(a[n-1] < a[n-2])
-            printf("Not sorted.");
+
+int isSorted(int size, int array[]) {
+    for (int i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1])
+            return 0; // Not sorted
     }
-    printf("Sorted");
+    return 1; // Sorted
 }
-int main()
-{
+
+int main() {
     clock_t begin = clock();
-    int i=0;
+    int i = 0;
     static int a[1000000];
-    FILE* fptr;
+    FILE *fptr;
     fptr = fopen("D:\\C\\c programms\\Almost sorted input (1.000.000 elements).txt", "r");
-    while (fscanf(fptr, "%d", &a[i]) == 1)
-    {
+    
+    while (fscanf(fptr, "%d", &a[i]) == 1) {
         i++;
     }
-    selectionsort(i,a);
 
+    selectionSortAlg(i, a);
 
     fclose(fptr);
 
     clock_t end = clock();
-    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printarray(i,a);
-    SortedCheck(i,a);
+    printArray(i, a);
 
-    printf("\nTotal time spent= %f sec",time_spent);
+    if (isSorted(i, a))
+        printf("Sorted\n");
+    else
+        printf("Not sorted\n");
+
+    printf("Total time spent = %f sec\n", time_spent);
     return 0;
 }

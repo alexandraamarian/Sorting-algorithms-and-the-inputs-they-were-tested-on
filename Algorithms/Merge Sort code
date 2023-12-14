@@ -1,88 +1,98 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
-void merge(int arr[], int l, int m, int r)
-{
+
+void merge(int inputDataArray[], int leftIndex, int middleIndex, int rightIndex) {
     int i, j, k;
-    int n1 = m - l + 1;
-    int n2 = r - m;
-    static int L[9999999], R[9999999];
-    for (i = 0; i < n1; i++)
-        L[i] = arr[l + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[m + 1 + j];
+    int sizeLeft = middleIndex - leftIndex + 1;
+    int sizeRight = rightIndex - middleIndex;
+
+    int *leftArray = (int *)malloc(sizeLeft * sizeof(int));
+    int *rightArray = (int *)malloc(sizeRight * sizeof(int));
+
+    for (i = 0; i < sizeLeft; i++)
+        leftArray[i] = inputDataArray[leftIndex + i];
+    for (j = 0; j < sizeRight; j++)
+        rightArray[j] = inputDataArray[middleIndex + 1 + j];
+
     i = 0;
     j = 0;
-    k = l;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) {
-            arr[k] = L[i];
+    k = leftIndex;
+
+    while (i < sizeLeft && j < sizeRight) {
+        if (leftArray[i] <= rightArray[j]) {
+            inputDataArray[k] = leftArray[i];
             i++;
-        }
-        else {
-            arr[k] = R[j];
+        } else {
+            inputDataArray[k] = rightArray[j];
             j++;
         }
         k++;
     }
-    while (i < n1) {
-        arr[k] = L[i];
+
+    while (i < sizeLeft) {
+        inputDataArray[k] = leftArray[i];
         i++;
         k++;
     }
-    while (j < n2) {
-        arr[k] = R[j];
+
+    while (j < sizeRight) {
+        inputDataArray[k] = rightArray[j];
         j++;
         k++;
     }
+
+    free(leftArray);
+    free(rightArray);
 }
-void mergesort(int arr[], int l, int r)
-{
-    if (l < r) {
-        int m = l + (r - l) / 2;
-        mergesort(arr, l, m);
-        mergesort(arr, m + 1, r);
-        merge(arr, l, m, r);
+
+void mergeSortAlg(int inputDataArray[], int leftIndex, int rightIndex) {
+    if (leftIndex < rightIndex) {
+        int middleIndex = leftIndex + (rightIndex - leftIndex) / 2;
+        mergeSortAlg(inputDataArray, leftIndex, middleIndex);
+        mergeSortAlg(inputDataArray, middleIndex + 1, rightIndex);
+        merge(inputDataArray, leftIndex, middleIndex, rightIndex);
     }
 }
-void printarray (int n, int array[])
-{
-    int i;
-    for (i=0; i<n; i++)
-        printf("%d ",array[i]);
+
+void printArray(int size, int array[]) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", array[i]);
     printf("\n");
 }
-int SortedCheck(int n, int a[])
-{
-    for (int i = 0; i < n; ++i)
-    {
-        if(a[n-1] < a[n-2])
-            printf("Not sorted.");
+
+int isSorted(int size, int array[]) {
+    for (int i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1])
+            return 0; // Not sorted
     }
-    printf("Sorted");
+    return 1; // Sorted
 }
-int main()
-{
-    int i=0;
+
+int main() {
+    int i = 0;
     static int a[1000000];
 
     clock_t begin = clock();
-    FILE* fptr;
+    FILE *fptr;
     fptr = fopen("D:\\C\\c programms\\extralarge_similar_list.txt", "r");
 
-    while (fscanf(fptr, "%d", &a[i]) == 1)
-    {
+    while (fscanf(fptr, "%d", &a[i]) == 1) {
         i++;
     }
 
-    mergesort(a,1,i);
+    mergeSortAlg(a, 0, i - 1);
     fclose(fptr);
     clock_t end = clock();
-    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
-    printarray(i,a);
-    SortedCheck(i,a);
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printArray(i, a);
 
-    printf("\nTotal time spent= %f sec",time_spent);
+    if (isSorted(i, a))
+        printf("Sorted\n");
+    else
+        printf("Not sorted\n");
 
+    printf("\nTotal time spent = %f sec", time_spent);
 
     return 0;
 }

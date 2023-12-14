@@ -1,74 +1,75 @@
 #include <stdio.h>
 #include <time.h>
 
-void countsort(long a[], long n, long exp)
-{
-    static long output[1000000];
-    long i, count[10] = { 0 };
+void countSort(long inputDataArray[], long size, long divisor) {
+    static long result[1000000];
+    long i, count[10] = {0};
 
-    for (i = 0; i < n; i++)
-        count[(a[i] / exp) % 10]++;
+    for (i = 0; i < size; i++)
+        count[(inputDataArray[i] / divisor) % 10]++;
 
     for (i = 1; i < 10; i++)
         count[i] += count[i - 1];
 
-    for (i = n - 1; i >= 0; i--)
-    {
-        output[count[(a[i] / exp) % 10] - 1] = a[i];
-        count[(a[i] / exp) % 10]--;
+    for (i = size - 1; i >= 0; i--) {
+        result[count[(inputDataArray[i] / divisor) % 10] - 1] = inputDataArray[i];
+        count[(inputDataArray[i] / divisor) % 10]--;
     }
-    for (i = 0; i < n; i++)
-        a[i] = output[i];
+
+    for (i = 0; i < size; i++)
+        inputDataArray[i] = result[i];
 }
-int getMax(long a[], long n)
-{
-    long mx = a[0];
-    for (long i = 1; i < n; i++)
-        if (a[i] > mx)
-            mx = a[i];
-    return mx;
+
+long getMax(long inputDataArray[], long size) {
+    long maxV = inputDataArray[0];
+    for (long i = 1; i < size; i++)
+        if (inputDataArray[i] > maxV)
+            maxV = inputDataArray[i];
+    return maxV;
 }
-void radixsort(long a[], long n)
-{
-    long m = getMax(a, n);
-    for (long exp = 1; m / exp > 0; exp *= 10)
-        countsort(a, n, exp);
+
+void radixSort(long inputDataArray[], long size) {
+    long m = getMax(inputDataArray, size);
+    for (long div = 1; m / div > 0; div *= 10)
+        countSort(inputDataArray, size, div);
 }
-void printarray (long n, long array[])
-{
-    long i;
-    for (i=0; i<n; i++)
-        printf("%d ",array[i]);
+
+void printArray(long size, long array[]) {
+    for (long i = 0; i < size; i++)
+        printf("%ld ", array[i]);
     printf("\n");
 }
-int sortedcheck(long n, long a[]){
-    for (long i = 0; i < n; ++i){
-        if(a[n-1] < a[n-2])
-            printf("Not sorted.");
+
+int isSorted(long size, long array[]) {
+    for (long i = 0; i < size - 1; i++) {
+        if (array[i] > array[i + 1])
+            return 0; // Not sorted
     }
-    printf("Sorted");
+    return 1; // Sorted
 }
-int main()
-{
-    long i=0;
+
+int main() {
+    long i = 0;
     static long a[1000000];
     clock_t begin = clock();
-    FILE* fptr;
+    FILE *fptr;
     fptr = fopen("D:\\C\\c programms\\Almost sorted input (1.000.000 elements).txt", "r");
 
-    while (fscanf(fptr, "%d", &a[i]) == 1)
-    {
+    while (fscanf(fptr, "%ld", &a[i]) == 1) {
         i++;
     }
     fclose(fptr);
 
-    radixsort(a,i);
+    radixSort(a, i);
 
     clock_t end = clock();
-    double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    sortedcheck(i,a);
-    printf(" %d\n ",i);
-    printf("Total time spent= %f sec",time_spent);
+    if (isSorted(i, a))
+        printf("Sorted\n");
+    else
+        printf("Not sorted\n");
+
+    printf("Total time spent = %f sec\n", time_spent);
     return 0;
 }
